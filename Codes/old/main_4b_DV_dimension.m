@@ -3,7 +3,7 @@ plt = SW_plt_from_yml('fig.yml');
 %% way 2 - autocorr of beta
 d = W.load('../Data/anova_value_cont_allcells_normalized');
 dd = cell(1,3);
-coef = NaN(121, 3);
+coef = NaN(170, 3);
 wd = [75 750];
 tm = d.anova_setting.time_at;
 id = find(tm >= wd(1) & tm <= wd(2));

@@ -1,14 +1,14 @@
 classdef model_YP < S_RL_model
     methods
         function obj = model_YP()
+            obj.name = "YP";
             obj.name_parameters = {'beta', 'k', 'thres', 'biasYP'};
             obj.X0 = [NaN, NaN, 0, 0];
             NMAX = inf;
             obj.LB = [0, 0, -NMAX, -NMAX];
             obj.UB = [NMAX, NMAX, NMAX, NMAX];
         end
-        function cp = policy(obj, data)
-            params = obj.params;
+        function [cp, LV] = policy(obj, params, LV, data)
             D = data.delay;
             R = data.drop;
             DV = R/(1 + params.k * D);
@@ -18,7 +18,7 @@ classdef model_YP < S_RL_model
                 bias = -params.biasYP;
             end
             cp = W_RL.softmax_binary_bias(DV, params.thres, params.beta, bias);
-            obj.latentvariables.DV = DV;
+            LV.DV = DV;
         end
     end
 end

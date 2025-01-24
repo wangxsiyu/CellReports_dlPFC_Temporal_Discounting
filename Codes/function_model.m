@@ -14,6 +14,6 @@ function xfit = function_model(games, modeli)
         case 2
             %% model 2 - basic + YP
             model2 = model_YP;
-            xfit.model_YP = RLopt.fmincon_model(model2);
+            xfit.model_YP = RLopt.train(model2);
     end
 end
