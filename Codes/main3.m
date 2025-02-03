@@ -1,3 +1,17 @@
+
+d = W.load('../Data/anova_GOvalue_cont_allcells_normalized');
+dd = cell(1,3);
+coef = NaN(170, 3);
+wd = [75 750];
+tm = d.anova_setting.time_at;
+id = find(tm >= wd(1) & tm <= wd(2));
+for i = 1:5
+    dd{i} = W.cellfun_vertcat(@(x)x.coef_factors_terms(i+1,:), d.cells);
+    coef(:,i) = mean(dd{i}(:, id),2);
+end
+rr = W.cellfun_vertcat(@(x)x.r2, d.cells);
+r2 = nanmean(rr(:, id),2);
+
 %%
 dp = coef(:,1);
 dl = coef(:,2);
@@ -19,9 +33,9 @@ Xgo = W.cellfun(@(x)AAA * x', allgo)';
 Xgo = W.cell_NxMK2KxMN(W.cellfun(@(x)x',Xgo));
 %% delay decoded
 plt = SW_plt_from_yml('fig.yml');
-plt.figure(2,3, 'gapW_custom', [0 0 0 7]);
-tlts = {'drop', 'delay', 'DV'};
-for i = 1:3
+plt.figure(2,5, 'gapW_custom', [0 0 0 0 0 7]);
+tlts = {'drop', 'delay', 'DV', 'release', 'choice'};
+for i = 1:5
     plt.ax(1,i);
     cols = ["AZred20","AZcactus20","AZblue20", "AZred50","AZcactus50","AZblue50", "AZred","AZcactus","AZblue"];
     plt.plot(cue.time_at, Xcue{i}', [], 'line', 'color', cols);
@@ -29,7 +43,7 @@ for i = 1:3
     plt.ax(2,i);
     plt.plot(go.time_at, Xgo{i}', [], 'line', 'color', cols);
     plt.setfig_ax('xlim', [-500 1000], 'title', tlts{i}, 'ylabel', 'go');
-    if i == 3
+    if i == 5
         legs = arrayfun(@(x)sprintf("drop = %d, delay = %d", ddd.drop(x), ddd.delay(x)), 1:9);
         plt.setfig_ax('legend', legs, 'legloc', 'EO');
     end
@@ -48,7 +62,7 @@ for i = 1:2
 end
 plt.update('DV vs drop delay inv');
 %%
-YP = cell(2,2);
+YP = cell(2,1);
 op = ["accept"];
 for i = 1:1
     allcueYP = get_all_trajYP(cue,op(i));
@@ -60,6 +74,59 @@ for i = 1:1
     XgoYP = W.cellfun(@(x)AAA * W.changem(x, 0)', allgoYP)';
     YP{2,i} = W.cell_NxMK2KxMN(W.cellfun(@(x)x',XgoYP));
 end
+%%
+
+plt.figure(2,5, 'gapW_custom', [0 0 0 0 0 0]);
+tlts = {'drop', 'delay', 'DV', 'release', 'choice'};
+ylms = {[-2,2], [-4,4], [-1,1]};
+for i = 1:5
+    plt.ax(1,i);
+    cols = ["AZred20","AZcactus20","AZblue20", "AZred50","AZcactus50","AZblue50", "AZred","AZcactus","AZblue"];
+    se = [];
+    av = YP{1,1}{i}';
+    plt.plot(cue.time_at, av, se, 'line', 'color', cols);
+    plt.dashX(0);
+    plt.setfig_ax('xlim', [-500 1000], 'title', tlts{i}, 'ylabel', 'cue (hold)');
+%     plt.setfig_ax('ylim', ylms{i});
+    plt.ax(2,i);
+    av = YP{2,1}{i}';
+    plt.plot(go.time_at, av, se, 'line', 'color', cols);
+    plt.dashX(0);
+    plt.setfig_ax('xlim', [-500 1000], 'title', tlts{i}, 'ylabel', 'go (hold)');
+%     if i == 3
+%         legs = arrayfun(@(x)sprintf("drop = %d, delay = %d", ddd.drop(x), ddd.delay(x)), 1:9);
+%         plt.setfig_ax('legend', legs, 'legloc', 'EO');
+%     end
+%     plt.setfig_ax('ylim', ylms{i});
+end
+plt.update('YP2accept');
+%%
+plt.figure(2,5, 'gapW_custom', [0 0 0 0 0 0]);
+tlts = {'drop', 'delay', 'DV', 'release', 'choice'};
+ylms = {[-2,2], [-4,4], [-1,1], [], []};
+for i = 1:5
+    plt.ax(1,i);
+    cols = 'black';
+    [av,se] = W.avse(YP{1,1}{i}');
+    plt.plot(cue.time_at, av, se, 'shade', 'color', cols);
+    plt.dashX(0);
+    plt.setfig_ax('xlim', [-500 1000], 'title', tlts{i}, 'ylabel', 'cue (hold)');
+    plt.setfig_ax('ylim', ylms{i});
+    plt.ax(2,i);
+    [av,se] = W.avse(YP{2,1}{i}');
+    plt.plot(go.time_at, av, se, 'shade', 'color', cols);
+    plt.dashX(0);
+    plt.setfig_ax('xlim', [-500 1000], 'title', tlts{i}, 'ylabel', 'go (hold)');
+%     if i == 3
+%         legs = arrayfun(@(x)sprintf("drop = %d, delay = %d", ddd.drop(x), ddd.delay(x)), 1:9);
+%         plt.setfig_ax('legend', legs, 'legloc', 'EO');
+%     end
+    plt.setfig_ax('ylim', ylms{i});
+
+
+end
+plt.update('YP');
+
 %%
 
 plt.figure(4,3, 'gapW_custom', [0 0 0 0]);
@@ -107,7 +174,7 @@ end
 plt.update('YP');
 
 %%
-
+% 
 plt.figure(4,3, 'gapW_custom', [0 0 0 0]);
 tlts = {'drop', 'delay', 'DV'};
 ylms = {[-2,2], [-4,4], [-1,1]};
