@@ -1,8 +1,13 @@
 data = W.load('../../TempData/cue');
 games = data.games;
 %% train model
-xfit = {};
-parfor gi = 1:length(games)
+modelname = '../../TempData/modelfit.mat';
+if exist(modelname, 'file')
+    xfit = W.load(modelname);
+else
+    xfit = {};
+end
+for gi = 1:length(games)
     RLopt = S_RL;
     RLopt.setup_optimizer('fmincon', 'repeat', 1, 'bound_inf', 20);
     g = games{gi};
@@ -11,17 +16,23 @@ parfor gi = 1:length(games)
     g.is_yellow_1st = strcmp(g.cue1, 'yellow');
     RLopt.load_data(g);
     % model - base
-    model = model_base;
-    xfit{gi}.model_base = RLopt.train(model);
+    if ~isfield(xfit{gi}, 'model_base') || xfit{gi}.model_base.LL < -1000
+        model = model_base;
+        xfit{gi}.model_base = RLopt.train(model);
+    end
     % model - basic + YP
-    model = model_YP;
-    xfit{gi}.model_YP = RLopt.train(model);
+    if ~isfield(xfit{gi}, 'model_YP') || xfit{gi}.model_YP.LL < -1000
+        model = model_YP;
+        xfit{gi}.model_YP = RLopt.train(model);
+    end
     % model - YP time
-    model = model_YP_time;
-    xfit{gi}.model_YP_time = RLopt.train(model);
+    if ~isfield(xfit{gi}, 'model_YP_time') || xfit{gi}.model_YP_time.LL < -1000
+        model = model_YP_time;
+        xfit{gi}.model_YP_time = RLopt.train(model);
+    end
 end
 %% save model
-W.save('../../TempData/model_YP', 'xfit', xfit);
+W.save(modelname, 'xfit', xfit);
 % %% calculate value
 % xfit = W.load('../../TempData/model_YP');
 % DVgames = {};
