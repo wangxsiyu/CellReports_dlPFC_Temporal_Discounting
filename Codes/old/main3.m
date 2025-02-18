@@ -1,7 +1,7 @@
 animals = {"S","T", ["S","T"]};
 saveanimals = ["S", "T", "all"];
 for ai = 3
-    d = W.load('../Data/anova_GOvalue_cont_allcells_normalized');
+    d = W.load('./anova_GOvalue_cont_allcells_normalized');
     idcell = ismember(d.info_cells.animal, animals{ai});
     d = W.select_cells(d, idcell);
     dd = cell(1,3);
