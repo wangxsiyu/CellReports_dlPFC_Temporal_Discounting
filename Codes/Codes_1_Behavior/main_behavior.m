@@ -4,7 +4,7 @@ games = data.games;
 xfit = {};
 parfor gi = 1:length(games)
     RLopt = S_RL;
-    RLopt.setup_optimizer('fmincon', 'repeat', 2, 'bound_inf', 20);
+    RLopt.setup_optimizer('fmincon', 'repeat', 1, 'bound_inf', 100);
     g = games{gi};
     g.reward = zeros(size(g,1),1);
     g.action = 1 + g.choice; % 2 - accept, 1 - reject
@@ -31,6 +31,7 @@ parfor xi = 1:length(xfit)
     [info] = RLopt.test(xx.params, xx.model);
     g.DV = info.DV;
     g.action_likelihood = info.action_likelihood;
+    g.pred_accept = info.action_dist(:,2);
     DVgames{xi} = g;
 end
 %% save game with DV
