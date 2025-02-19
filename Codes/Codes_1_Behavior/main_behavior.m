@@ -35,6 +35,40 @@ end
 W.cellfun_vertcat(@(x)[x.model_base.LL, x.model_YP.LL, x.model_YP_time.LL], xfit)
 %% save model
 W.save(modelname, 'xfit', xfit);
+%% train model overall
+ani_gm = unique(data.info_cells(:, ["animal", "gameID"]));
+animals = ["S","S","S","T","T","T"];
+models = ["model_base", "model_YP", "model_YP_time","model_base", "model_YP", "model_YP_time"];
+xfit = {};
+parfor repi = 1:6
+    animal = animals(repi);
+    md = models(repi);
+    xfit{repi}.animal = animal;
+    xfit{repi}.modelname = md;
+    g = vertcat(games{ani_gm.animal == animal});
+
+    RLopt = S_RL;
+    RLopt.setup_optimizer('fmincon', 'repeat', 2, 'bound_inf', 20);
+    g.reward = zeros(size(g,1),1);
+    g.action = 1 + g.choice; % 2 - accept, 1 - reject
+    g.is_yellow_1st = strcmp(g.cue1, 'yellow');
+    RLopt.load_data(g);
+    switch md
+        case "model_base"
+            model = model_base;
+            xfit{repi}.model_base = RLopt.train(model);
+        case 'model_YP'
+            model = model_YP;
+            xfit{repi}.model_YP = RLopt.train(model);
+        case 'model_YP_time'
+            model = model_YP_time;
+            xfit{repi}.model_YP_time = RLopt.train(model);
+    end
+end
+W.save('../../TempData/modelfit_overall.mat', 'xfit', xfit);
+
+
+
 % %% calculate value
 % xfit = W.load('../../TempData/model_YP');
 % DVgames = {};
