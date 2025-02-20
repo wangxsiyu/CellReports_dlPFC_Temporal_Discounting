@@ -11,7 +11,7 @@ classdef model_base < S_RL_model
             D = data.delay;
             R = data.drop;
             DV = R/(1 + params.k * D);
-            cp = W_RL.softmax_binary(DV, params.thres, params.beta);
+            cp = W_RL.softmax_binary(params.thres, DV, params.beta);
             % cp = 1./(1 + exp(-params.beta * DV - params.thres));
             % cp = [1-cp, cp];
             LV.DV = DV;

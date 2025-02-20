@@ -24,7 +24,7 @@ classdef model_YP_time < S_RL_model
                 V1_now = func(R, D); 
             end
             V1 = V1_now + V1_future;
-            cp = W_RL.softmax_binary(V1, V2, params.beta);
+            cp = W_RL.softmax_binary(V2, V1, params.beta);
         end
     end
 end

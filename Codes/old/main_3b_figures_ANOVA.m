@@ -110,22 +110,12 @@ for i = 1:2
     games{i} = function_value(tab, xfit{i}, 'model_base');
 end
 %%
-plt.figure(1,2)
-xlms = {[0 2], [0 4]};
-for i = 1:2
-    plt.ax(3-i);
-    params = xfit{i}.model_base.params_table;
-    cc = W.cond_average_tab(games{i}, {'condition'}, {'choice','DV','drop', 'delay'});
-    sp = 'ooosssddd';
-    col = 'brgbrgbrg';
-    xs = 0:0.01:5;
-    cp = arrayfun(@(x)1./(1 + exp(-params.beta * x - params.thres)), xs);
-    plt.plot(xs, cp * 100, [], 'line', 'color', 'black', 'LineWidth', 1);
-    for j = 1:9
-        plt.scatter(cc.avDV(j), cc.avCHOICE(j) * 100, [], 'shape', sp(j), ...
-            'dotsize', 7, 'color', col(j));
-    end
-    plt.setfig_ax('ylabel', 'Accept Rate (%)', 'xlabel', '', 'ylim', [0 100], ...
-        'ytick', [0:10:100], 'title', ['Monkey ' num2str(3-i)], 'xlim', xlms{i});
-end
-plt.update('behavior');
+% plt.figure(1,2)
+% for i = 1:2
+%     plt.ax(3-i);
+%     params = xfit{i}.model_base.params_table;
+%     cc = W.cond_average_tab(games{i}, {'condition'}, {'choice','DV','drop', 'delay'});
+%     sp = 'ooosssddd';
+%     col = 'brgbrgbrg';
+% end
+% plt.update('behavior');

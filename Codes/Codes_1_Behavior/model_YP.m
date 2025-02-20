@@ -17,7 +17,7 @@ classdef model_YP < S_RL_model
             else
                 bias = -params.biasYP;
             end
-            cp = W_RL.softmax_binary_bias(DV, params.thres, params.beta, bias);
+            cp = W_RL.softmax_binary_bias(params.thres, DV, params.beta, bias);
             LV.DV = DV;
         end
     end
