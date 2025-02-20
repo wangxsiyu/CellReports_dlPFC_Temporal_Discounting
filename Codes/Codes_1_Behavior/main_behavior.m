@@ -1,40 +1,40 @@
 data = W.load('../../TempData/cue');
 games = data.games;
 %% train model per session
-% modelname = '../../TempData/modelfit_session.mat';
-% if exist(modelname, 'file')
-%     xfit = W.load(modelname);
-% else
-%     xfit = {};
-% end
-% for gi = 1:length(games)
-%     RLopt = S_RL;
-%     RLopt.setup_optimizer('fmincon', 'repeat', 1, 'bound_inf', 20);
-%     g = games{gi};
-%     g.reward = zeros(size(g,1),1);
-%     g.action = 1 + g.choice; % 2 - accept, 1 - reject
-%     g.is_yellow_1st = strcmp(g.cue1, 'yellow');
-%     RLopt.load_data(g);
-%     % model - base
-%     if ~isfield(xfit{gi}, 'model_base') || xfit{gi}.model_base.LL < -500
-%         model = model_base;
-%         xfit{gi}.model_base = RLopt.train(model);
-%     end
-%     % model - basic + YP
-%     if ~isfield(xfit{gi}, 'model_YP') || xfit{gi}.model_YP.LL < -500
-%         model = model_YP;
-%         xfit{gi}.model_YP = RLopt.train(model);
-%     end
-%     % model - YP time
-%     if ~isfield(xfit{gi}, 'model_YP_time') || xfit{gi}.model_YP_time.LL < -500
-%         model = model_YP_time;
-%         xfit{gi}.model_YP_time = RLopt.train(model);
-%     end
-% end
-% %% check model fits
-% W.cellfun_vertcat(@(x)[x.model_base.LL, x.model_YP.LL, x.model_YP_time.LL], xfit)
-% %% save model
-% W.save(modelname, 'xfit', xfit);
+modelname = '../../TempData/modelfit_session.mat';
+if exist(modelname, 'file')
+    xfit = W.load(modelname);
+else
+    xfit = {};
+end
+parfor gi = 1:length(games)
+    RLopt = S_RL;
+    RLopt.setup_optimizer('fmincon', 'repeat', 1, 'bound_inf', 20);
+    g = games{gi};
+    g.reward = zeros(size(g,1),1);
+    g.action = 1 + g.choice; % 2 - accept, 1 - reject
+    g.is_yellow_1st = strcmp(g.cue1, 'yellow');
+    RLopt.load_data(g);
+    % model - base
+    %     if ~isfield(xfit{gi}, 'model_base') || xfit{gi}.model_base.LL < -500
+    model = model_base;
+    xfit{gi}.model_base = RLopt.train(model);
+    %     end
+    % model - basic + YP
+    %     if ~isfield(xfit{gi}, 'model_YP') || xfit{gi}.model_YP.LL < -500
+    model = model_YP;
+    xfit{gi}.model_YP = RLopt.train(model);
+    %     end
+    % model - YP time
+    %     if ~isfield(xfit{gi}, 'model_YP_time') || xfit{gi}.model_YP_time.LL < -500
+    model = model_YP_time;
+    xfit{gi}.model_YP_time = RLopt.train(model);
+    %     end
+end
+%% check model fits
+W.cellfun_vertcat(@(x)[x.model_base.LL, x.model_YP.LL, x.model_YP_time.LL], xfit)
+%% save model
+W.save(modelname, 'xfit', xfit);
 %% train model overall
 ani_gm = unique(data.info_cells(:, ["animal", "gameID"]));
 animals = ["S","S","S","T","T","T"];
