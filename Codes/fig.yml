@@ -4,3 +4,4 @@ custom_vars:
     color_anova: [AZred, AZblue, AZcactus, AZsand, AZsky, AZbrick]
     drop: [2, 2, 2, 4, 4, 4, 6, 6, 6]
     delay: [1, 5, 10, 1, 5, 10, 1, 5, 10]
+    color_condition: ["AZred20","AZcactus20","AZblue20", "AZred50","AZcactus50","AZblue50", "AZred","AZcactus","AZblue"]
