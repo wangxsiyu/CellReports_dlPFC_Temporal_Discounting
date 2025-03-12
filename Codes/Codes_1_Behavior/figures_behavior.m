@@ -28,7 +28,7 @@ drop = plt.custom_vars.drop;
 delay = plt.custom_vars.delay;
 %%
 plt.figure(2,2, 'is_title', 'all', 'gapW_custom', [0 0 4]);
-xlms = {[0 2], [0 4]};
+xlms = {[0 2.5], [0 4]};
 for i = 1:2
     plt.ax(1, i);
     xs = 0:0.01:5;
