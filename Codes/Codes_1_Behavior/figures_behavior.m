@@ -61,6 +61,7 @@ for i = 1:2
     end
 end
 plt.update('behavior');
+W.save('../../TempData/behavior_pYP', 'ps', ps);
 %% model comparison
 d = W.load('../../TempData/modelfit_session');
 aic = W.cellfun_horzcat(@(x)[x.model_base.aic;x.model_YP_time.aic;x.model_YP.aic], d);
