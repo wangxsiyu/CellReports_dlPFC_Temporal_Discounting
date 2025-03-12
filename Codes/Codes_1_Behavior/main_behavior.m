@@ -1,4 +1,5 @@
 data = W.load('../../TempData/cue');
+ani_gm = unique(data.info_cells(:, ["animal", "gameID"]));
 games = data.games;
 %% train model per session
 modelname = '../../TempData/modelfit_session.mat';
@@ -36,7 +37,6 @@ W.cellfun_vertcat(@(x)[x.model_base.LL, x.model_YP.LL, x.model_YP_time.LL], xfit
 %% save model
 W.save(modelname, 'xfit', xfit);
 %% train model overall
-ani_gm = unique(data.info_cells(:, ["animal", "gameID"]));
 animals = ["S","S","S","T","T","T"];
 models = ["model_base", "model_YP", "model_YP_time","model_base", "model_YP", "model_YP_time"];
 xfit = cell(1,6);
@@ -51,7 +51,7 @@ parfor repi = 1:6
         g = vertcat(games{ani_gm.animal == animal});
 
         RLopt = S_RL;
-        RLopt.setup_optimizer('fmincon', 'repeat', 1, 'bound_inf', 20);
+        RLopt.setup_optimizer('fmincon', 'repeat', 2, 'bound_inf', 20);
         g.reward = zeros(size(g,1),1);
         g.action = 1 + g.choice; % 2 - accept, 1 - reject
         g.is_yellow_1st = strcmp(g.cue1, 'yellow');

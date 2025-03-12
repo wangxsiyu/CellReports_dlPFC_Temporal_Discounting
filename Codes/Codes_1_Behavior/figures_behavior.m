@@ -11,6 +11,17 @@ v1 = W.cellfun_vertcat(@(g)W.cond_average_tab(g, 'condition', 'DV'), gs_all);
 %% compute p(accept) separated by yellow/purple
 c1 = W.cellfun_vertcat(@(g)W.cond_average_tab(g(g.cue1 == "yellow",:), 'condition', 'choice'), gs_all);
 c2 = W.cellfun_vertcat(@(g)W.cond_average_tab(g(g.cue1 ~= "yellow",:), 'condition', 'choice'), gs_all);
+%% t-test 
+ps = [];
+for i = 1:2
+    g = gs_all{i};
+    for c = 1:9
+        tc = g.choice(g.condition == c);
+        typ = g.cue1(g.condition == c) == "yellow";
+        [ps(i, c)] = W.chi2ind_xy(tc, typ);
+    end
+end
+ps = ps * 18;
 %% plot
 plt = SW_plt_from_yml('../fig.yml');
 drop = plt.custom_vars.drop;
@@ -40,6 +51,7 @@ for i = 1:2
     se = [c1.seCHOICE(i,:); c2.seCHOICE(i,:)];
     [~, tid] = sort(c0.avCHOICE(i, :));
     plt.plot(1:length(tid), av(:, tid), se(:, tid), 'bar', 'color', {'yellow','magenta'});
+    plt.sigstar(1:length(tid), mean(av(:, tid)), ps(i,tid))
     plt.setfig_ax('xlabel', '', 'ylabel', 'Accept Rate (%)', ...
         'xlim', [0 10], 'xtick', 1:9, ...
         'xticklabel', W.arrayfun(@(x)sprintf('%d\\newline%d', drop(x), delay(x)), tid, false));
@@ -49,3 +61,17 @@ for i = 1:2
     end
 end
 plt.update('behavior');
+%% model comparison
+d = W.load('../../TempData/modelfit_session');
+aic = W.cellfun_horzcat(@(x)[x.model_base.aic;x.model_YP_time.aic;x.model_YP.aic], d);
+% bic = W.cellfun_horzcat(@(x)[x.model_base.bic;x.model_YP_time.bic;x.model_YP.bic], d);
+plt.figure(2,2);
+xname = {'base', 'YP time', 'YP'};
+animals = ["S", "T"];
+for ai = 1:2
+    id = session.animal == animals(ai);
+    plt = S_fig.plt_model_comparison(plt, aic(:, id)', 'AIC', xname, ai, 2+ai);
+    % plt = S_fig.plt_model_comparison(plt, bic(:, id)', 'BIC', xname, 2, 4);
+end
+plt.setfig([1 2], 'title', {'Monkey 1', 'Monkey 2'});
+plt.update('model comparison');
