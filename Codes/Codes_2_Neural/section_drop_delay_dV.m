@@ -82,3 +82,24 @@ for ai = 1:3
     plt.setfig_ax('xlabel', 'DV', 'ylabel', 'delay', 'title', tlt{ai});
 end
 plt.update('dropdelay_corr');
+%%
+tms = {[75 250], [250 500], [500 750], [750 1000], [75 750]};
+for ti = 1:length(tms)
+    tm = tms{ti};
+    id = timeat >= tm(1) & timeat <= tm(2);
+    plt.figure(3,3, 'is_title', 'all');
+    for ai = 1:3
+        plt.ax(1,ai);
+        plt.scatter(mean(vs_drop{ai}(:, id), 2), mean(vs_delay{ai}(:, id), 2), 'corr');
+        plt.setfig_ax('xlabel', 'drop', 'ylabel', 'delay', 'title', tlt{ai});
+
+        plt.ax(2,ai);
+        plt.scatter(mean(vs_DV{ai}(:, id), 2), mean(vs_drop{ai}(:, id), 2), 'corr');
+        plt.setfig_ax('xlabel', 'DV', 'ylabel', 'drop', 'title', tlt{ai});
+
+        plt.ax(3,ai);
+        plt.scatter(mean(vs_DV{ai}(:, id), 2), mean(vs_delay{ai}(:, id), 2), 'corr');
+        plt.setfig_ax('xlabel', 'DV', 'ylabel', 'delay', 'title', tlt{ai});
+    end
+    plt.update(sprintf('dropdelay_corr_%d_%d',tm(1), tm(2)));
+end
