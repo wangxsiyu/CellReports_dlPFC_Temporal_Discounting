@@ -83,7 +83,7 @@ for ai = 1:3
 end
 plt.update('dropdelay_corr');
 %%
-tms = {[75 250], [250 500], [500 750], [750 1000], [75 750]};
+tms = {[-250 0], [0 500], [-500 -250]};% [75 250], [250 500], [500 750], [750 1000], [75 750]};
 for ti = 1:length(tms)
     tm = tms{ti};
     id = timeat >= tm(1) & timeat <= tm(2);
