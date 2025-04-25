@@ -144,23 +144,24 @@ plt = SW_plt_from_yml('../fig.yml');
 %      'legloc', 'NE', 'xlim', [-500, 1000], 'ylim', [-0.001 0.035], 'ytick', [-0.05:0.01:0.05]}, ...
 %      'ABC_axes', 'ABACDB', 'nx', 2, 'ny', 3, ...
 %      'varargin_fig', 'is_title', 'all');
-
-
-
 %% ANOVA: condition 
 factornames = {'condition', 'motor', 'GO cue', 'choice'};
 factornames_in_data = {'condition', 'release1', 'cue1', 'choice'};
-nested = zeros(4,4);
-nested(3,1) = 1;
+% nested = zeros(4,4);
+% nested(3,1) = 1;
+model = [1 0 0 0; 0 1 0 0; 0 0 0 1; 0 0 1 0; 1 0 1 0];
 anv = {};
 for i = 1:2
     d = go{i};
     anv{i} = W.anovan_slidingwindow_combinedgames(d, factornames, ...
         'factornames_in_data', factornames_in_data, ...
-        'nested', nested);
+        'model', model);
 end
 anv{3} = W.format_combinecells(anv);
 W.save('../../TempData/result/anvGO_condition', 'anv', anv);
+%%
+is_sig_baseline = W.cellfun_horzcat(@(x)mean(x.is_significant(:,timeat < 0),2), anv{3}.cells);
+is_sig = W.cellfun_horzcat(@(x)mean(x.is_significant(:,timeat >= 0),2), anv{3}.cells);
 %%
 anv = W.load('../../TempData/result/anvGO_condition');
 SW_fig(plt, anv{1}, anv{2}, anv{3}, 'axes', 'ax_slidingwindow_ANOVA','ax_slidingwindow_ANOVA','ax_slidingwindow_ANOVA', ...
