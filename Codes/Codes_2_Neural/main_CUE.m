@@ -154,31 +154,26 @@ for ai = 1:3
 end
 W.save('decodingC', 'result', results);
 %% decoding
-oo = W.cellfun(@(x)x{1}, results, false);
+cols = ["AZred20","AZcactus20","AZblue20", "AZred50","AZcactus50","AZblue50", "AZred","AZcactus","AZblue"];
+
 plt.figure(3,3, 'is_title', 'all')
 for ai = 1:3
-    r0 = oo{ai};
+    r0 = results{ai};
     r = cell(1,3);
-    r{1} = W.average_bycond(r0.r_delay.ypredict, )
-%     tlt = {'drop', 'delay', 'Drop x Delay'};
+    r{1} = W.average_bycond(r0.r_delay.ypredict, r0.game_test.games.condition, 1:9);
+    r{2} = W.average_bycond(r0.r_drop.ypredict, r0.game_test.games.condition, 1:9);
+    r{3} = W.average_bycond(r0.r_DV.ypredict, r0.game_test.games.condition, 1:9);
+    tlt = {'drop', 'delay', 'DV'};
     for i = 1:3
         plt.ax(i, ai);
-        [av, se] = W.avse(r{i});
-        plt.plot(timeat, av, se, 'shade', 'color', plt.custom_vars.color_anova{i});
-        plt.dashX(chance(i));
-        plt.dashY(0, [0 1]);
+        % [av, se] = W.avse(r{i});
+        av = r{i};
+        plt.plot(timeat, av, [], 'line', 'color', cols);
+        % plt.dashX(chance(i));
+        % plt.dashY(0, [0 1]);
         plt.setfig_ax('xlabel', 'time (ms)', 'ylabel', 'decoding accuracy', 'title', tlt{ai}, ...
-            'xlim', [-500 1000]);
-        if i == 3
-            [av1, se1] = W.avse(r{1}.*r{2});
-            [p] = W.stat_ttest(r{1}.*r{2}, r{3});
-            tid = find(timeat > -500 & timeat < 1000);
-            plt.plot(timeat, av1, se1, 'shade', 'color', 'black');
-            plt.sigstar(timeat(tid), av(tid) + se(tid) + 0.01, p(tid), 'dx', 25)
-            plt.setfig_ax('legend', {'data','independence'}, 'ylim', [0 1]);
-        else
-            plt.setfig_ax('ylim', [0 1]);
-        end
+            'xlim', [-500 1000], 'ylim', []);
+        
     end
 end
-plt.update('decode');
+plt.update('decodeC');
