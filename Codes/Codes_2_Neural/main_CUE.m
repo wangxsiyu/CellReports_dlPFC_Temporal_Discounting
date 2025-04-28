@@ -154,6 +154,7 @@ for ai = 1:3
 end
 W.save('decodingC', 'result', results);
 %% decoding
+results = W.load('decodingC');
 cols = ["AZred20","AZcactus20","AZblue20", "AZred50","AZcactus50","AZblue50", "AZred","AZcactus","AZblue"];
 
 plt.figure(3,3, 'is_title', 'all')
@@ -177,3 +178,29 @@ for ai = 1:3
     end
 end
 plt.update('decodeC');
+%% stability of coding
+plt.figure(3,3);
+for i = 1:3
+    r0 = results{i};
+    betas = W.cellfun_horzcat(@(x)x.Beta, r0.md_delay.models);
+    cor = corr(betas);
+    plt.ax(1,i);
+    [r, p] = corr(betas, betas);
+    plt.imagesc(timeat, timeat, r, 'AlphaData', p < 0.05);
+    plt.setfig_ax('xlabel', 'delay', 'ylabel', 'delay');
+
+    betas = W.cellfun_horzcat(@(x)x.Beta, r0.md_drop.models);
+    cor = corr(betas);
+    plt.ax(2,i);
+    [r, p] = corr(betas, betas);
+    plt.imagesc(timeat, timeat, r, 'AlphaData', p < 0.05);
+    plt.setfig_ax('xlabel', 'drop', 'ylabel', 'drop')
+
+    betas = W.cellfun_horzcat(@(x)x.Beta, r0.md_DV.models);
+    cor = corr(betas);
+    plt.ax(3,i);
+    [r, p] = corr(betas, betas);
+    plt.imagesc(timeat, timeat, r, 'AlphaData', p < 0.05);
+    plt.setfig_ax('xlabel', 'DV', 'ylabel', 'DV')
+end
+plt.update;
