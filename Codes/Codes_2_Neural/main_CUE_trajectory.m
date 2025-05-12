@@ -64,8 +64,8 @@ for ai = 1:2
     for i = 1:3
         x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid1, i)',5), pc{ai});
     end
-    % plt.plot3(x{1},x{2},x{3}, 'color', cols);
-    plt.plot(x{1},x{2},[],'line', 'color', cols);
+    plt.plot3(x{1},x{2},x{3}, 'color', cols);
+    % plt.plot(x{1},x{2},[],'line', 'color', cols);
 
     tid2 = timeat >= -200 & timeat <= 0;
     plt.ax(2,ai);
