@@ -65,7 +65,7 @@ end
 %     plt.plot([], te, [], 'line', 'color', cols);
 % end
 %% plot 3d 3pc
-plt.figure(4,2);
+plt.figure(2,2);
 for ai = 1:2
     tid1 = timeat >= 0 & timeat <= 1000;
     plt.ax(1,ai);
@@ -81,7 +81,7 @@ for ai = 1:2
     % plt.plot(x{1},x{2},[],'line', 'color', cols);
 
 
-    tid2 = timeat >= -500 & timeat <= 0;
+    tid2 = timeat >= -500 & timeat <= 500;
     plt.ax(2,ai);
     x = {};
     for i = 1:3
@@ -90,26 +90,64 @@ for ai = 1:2
     plt.plot3(x{1},x{2},x{3}, 'color', cols);
 
 
-    tid2 = timeat >= 0 & timeat <= 500;
-    plt.ax(3,ai);
-    x = {};
-    for i = 1:3
-        x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoY{ai});
-    end
-    plt.plot3(x{1},x{2},x{3}, 'color', cols);
-    % plt.plot(x{1},x{2},[],'line', 'color', cols);
-
-
-    tid2 = timeat >= 0 & timeat <= 500;
-    plt.ax(4,ai);
-    x = {};
-    for i = 1:3
-        x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoP{ai});
-    end
-    plt.plot3(x{1},x{2},x{3}, 'color', cols);
+    % tid2 = timeat >= 0 & timeat <= 500;
+    % plt.ax(3,ai);
+    % x = {};
+    % for i = 1:3
+    %     x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoY{ai});
+    % end
+    % plt.plot3(x{1},x{2},x{3}, 'color', cols);
+    % % plt.plot(x{1},x{2},[],'line', 'color', cols);
+    % 
+    % 
+    % tid2 = timeat >= 0 & timeat <= 500;
+    % plt.ax(4,ai);
+    % x = {};
+    % for i = 1:3
+    %     x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoP{ai});
+    % end
+    % plt.plot3(x{1},x{2},x{3}, 'color', cols);
 end
 plt.unify_lims({[1 1],[2 1]}, {[1 1],[2 1]})
 plt.unify_lims({[1 2],[2 2]}, {[1 2],[2 2]})
+plt.update;
+
+%%
+
+%% plot 3d 3pc
+plt.figure(2,2);
+for ai = 1:2
+    cols = W.arrayfun(@(x)plt.interpolatecolors({'RSred', 'yellow', 'RSgreen'}, [1 5 9], x), 1:9);
+    cols2 = W.cellfun(@(x)(x + [1 1 1])/2, cols);
+    [~, tid] = sort(c0.avCHOICE(ai, :));
+
+    tid2 = timeat >= -500 & timeat <= 0;
+    plt.ax(1,ai);
+    x = {};
+    for i = 1:3
+        x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoY{ai}(tid));
+    end
+    plt.plot3(x{1},x{2},x{3}, 'color', cols);
+    x = {};
+    for i = 1:3
+        x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoP{ai}(tid));
+    end
+    plt.plot3(x{1},x{2},x{3}, 'color', cols2);
+
+
+    tid2 = timeat >= 0 & timeat <= 500;
+    plt.ax(2,ai);
+    x = {};
+    for i = 1:3
+        x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoY{ai}(tid));
+    end
+    plt.plot3(x{1},x{2},x{3}, 'color', cols);
+    x = {};
+    for i = 1:3
+        x{i} = W.cellfun_vertcat(@(x)W.smooth1d([],x(tid2, i)',5), pcgoP{ai}(tid));
+    end
+    plt.plot3(x{1},x{2},x{3}, 'color', cols2);
+end
 plt.update;
 %% 
 %% compute choice curve, and condition means
