@@ -87,6 +87,7 @@ parfor xi = 1:length(games)
     g.DV = info.DV;
     g.action_likelihood = info.action_likelihood;
     g.pred_accept = info.action_dist(:,2);
+    g.pred_release = (~g.is_yellow_1st) .* g.pred_accept + g.is_yellow_1st .* (1 - g.pred_accept);
     DVgames{xi} = g;
 end
 %% save game with DV
