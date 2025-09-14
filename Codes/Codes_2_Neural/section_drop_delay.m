@@ -7,6 +7,8 @@ for i = 1:3
 end
 W.save('../../TempData/drop_delay.mat', 'anv', anv);
 %% drop vs delay
+anv = W.load('../../TempData/drop_delay.mat')
+
 plt.figure(3,3)
 vs_drop = cell(1,3);
 vs_delay = cell(1,3);
@@ -29,6 +31,7 @@ for ai = 1:3
     plt.setfig_ax('xlabel', 'delay', 'ylabel', 'delay')
     plt.ax(3,ai);
     [r, p] = corr(vdelay, vdrop);
+    rr{ai} = diag(r);
     plt.imagesc(timeat, timeat, r, 'AlphaData', p < 0.05);
     plt.setfig_ax('xlabel', 'drop', 'ylabel', 'delay')
 
@@ -48,5 +51,15 @@ for ai = 1:3
     plt.ax(1,ai);
     plt.scatter(mean(vs_drop{ai}(:, id), 2), mean(vs_delay{ai}(:, id), 2), 'corr');
     plt.setfig_ax('xlabel', 'drop', 'ylabel', 'delay', 'title', tlt{ai});
+end
+plt.update;
+%% drop/delay vs time
+plt.figure(1,2);
+for ai = 1:2
+    plt.ax(1,ai);
+
+
+    plt.plot(timeat, rr{ai}', [], 'line');
+    plt.setfig_ax('xlabel', 'time', 'ylabel', 'cor(delay, drop)', 'title', tlt{ai});
 end
 plt.update;
