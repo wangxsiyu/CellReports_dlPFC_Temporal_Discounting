@@ -443,7 +443,7 @@ plt.update('decodeG');
 %% decoding analysis
 kfold = 5;
 results = cell(1,3);
-for ai = 1:2
+for ai = 1:3
     d = go{ai};
     d = W.combinedcells_removeNAtrials(d);
     nmin = W.cellfun(@(x)min(W.count_cond(x.condition,1:9)), d.games);
@@ -476,8 +476,8 @@ for ai = 1:2
 end
 W.save('decoding_GOOO', 'result', results);
 %%
-plt.figure(3,2, 'is_title', 'all')
-for ai = 1:2
+plt.figure(3,3, 'is_title', 'all')
+for ai = 1:3
     r0 = results{ai};
     r = cell(1,3);
     r{1} = W.cellfun_vertcat(@(x)x.r_delay.ac_decode, r0);
@@ -498,11 +498,11 @@ for ai = 1:2
             [p] = W.stat_ttest(r{1}.*r{2}, r{3});
             tid = find(timeat > -500 & timeat < 1000);
             plt.plot(timeat, av1, se1, 'shade', 'color', 'black');
-            plt.sigstar(timeat(tid), "top", p(tid), 'dx', 25)
+            plt.sigstar(timeat(tid), av(tid) + se(tid) + 0.01, p(tid), 'dx', 25)
             plt.setfig_ax('legend', {'data','independence'}, 'ylim', [0 1]);
         else
             plt.setfig_ax('ylim', [0 1]);
         end
     end
 end
-plt.update('decode_GOOO');
+plt.update('decode');
