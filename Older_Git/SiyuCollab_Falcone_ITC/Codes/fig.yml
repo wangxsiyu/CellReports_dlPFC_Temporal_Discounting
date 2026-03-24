@@ -1,0 +1,4 @@
+savedir: '../Figures'
+custom_vars:
+    name_monkeys: [Monkey S, Monkey T]
+    color_anova: [AZred, AZblue, AZcactus, AZsand, AZsky, AZbrick]

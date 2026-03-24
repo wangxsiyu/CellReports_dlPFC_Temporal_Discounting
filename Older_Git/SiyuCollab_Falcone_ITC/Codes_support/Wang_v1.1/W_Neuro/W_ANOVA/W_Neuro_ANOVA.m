@@ -1,0 +1,3 @@
+classdef W_Neuro_ANOVA < W_Neuro_ANOVA_SlidingWindow & ...
+        W_Neuro_ANOVA_PooledOverTime
+end

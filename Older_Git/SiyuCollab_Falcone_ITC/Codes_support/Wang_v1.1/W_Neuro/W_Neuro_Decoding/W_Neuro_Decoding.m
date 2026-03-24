@@ -1,0 +1,2 @@
+classdef W_Neuro_Decoding < W_Neuro_Decoding_SVM
+end

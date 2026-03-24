@@ -1,0 +1,3 @@
+classdef W_Neuro_Format < W_Neuro_Format_Combine & ...
+        W_Neuro_Format_PseudoPopulation
+end

@@ -1,0 +1,3 @@
+classdef S_fig < S_fig_Neuro & ...
+        S_fig_RL
+end

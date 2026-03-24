@@ -1,0 +1,3 @@
+classdef S_fig_Neuro < S_fig_Neuro_singlecell & ...
+        S_fig_Neuro_ANOVA 
+end
